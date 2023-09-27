@@ -99,9 +99,10 @@ def get_delete_params():
     file_num = choose_file(output["file_delete_prompt"], "удалять")
     line = choose_line(file_num)
 
-    function.delete_line(file_num, line)
+    if line is not None:
+        function.delete_line(file_num, line)
 
-    print(output["underscores"], output["del_success_msg"], sep="\n")
+        print(output["underscores"], output["del_success_msg"], sep="\n")
 
 
 def get_add_params():
@@ -121,12 +122,14 @@ def get_change_params():
 
     file_num = choose_file(output["file_change_prompt"], "изменять")
     line = choose_line(file_num)
-    values = choose_new_values()
 
-    function.change_line(file_num, line, values)
+    if line is not None:
+        values = choose_new_values()
 
-    msg = output["success_msg"].format(action="изменены")
-    print(output["underscores"], msg, sep="\n")
+        function.change_line(file_num, line, values)
+
+        msg = output["success_msg"].format(action="изменены")
+        print(output["underscores"], msg, sep="\n")
 
 
 def get_clear_params():
@@ -178,16 +181,23 @@ def choose_file(prompt, action):
 
 def choose_line(file_num):
     line_count = len(function.read_file(file_num))
-    prompt = output["line_prompt"].format(action="Выбери", line_count=line_count)
 
-    line = int(input(prompt))
+    if line_count:
+        prompt = output["line_prompt"].format(action="Выбери", line_count=line_count)
 
-    while line < 1 or line > line_count:
-        prompt = output["line_prompt"].format(action="Введите", line_count=line_count)
-        print(output["answer_error"])
         line = int(input(prompt))
 
-    return line
+        while line < 1 or line > line_count:
+            prompt = output["line_prompt"].format(
+                action="Введите", line_count=line_count
+            )
+            print(output["answer_error"])
+            line = int(input(prompt))
+
+        return line
+    else:
+        print(output["underscores"], output["empty_file"], sep="\n")
+        return None
 
 
 def choose_add_parameters():
