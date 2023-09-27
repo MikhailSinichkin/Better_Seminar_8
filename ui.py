@@ -234,7 +234,7 @@ def loading():
     ]
 
     for i in range(len(animation)):
-        sys.stdout.write(animation[i] + f" {(i + 1) * 10}%\r")
+        sys.stdout.write("\r" + animation[i] + f" {(i + 1) * 10}%")
         sys.stdout.flush()
         time.sleep(0.2)
 
